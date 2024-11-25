@@ -1,0 +1,13 @@
+services:
+  updown-dev-db:
+    image: postgres:${POSTGRES_VERSION}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+volumes:
+  db:
+    driver: local

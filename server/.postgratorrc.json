@@ -1,0 +1,9 @@
+{
+    "migrationPattern": "migrations/*",
+    "driver": "pg",
+    "username": "postgres",
+    "host": "127.0.0.1",
+    "database": "updown",
+    "password": "password",
+    "port": 5435
+}

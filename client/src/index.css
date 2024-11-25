@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: monospace;
+  line-height: 1.5;
+  font-size: 2rem;
+}
+
+@layer utilities {
+  .circuit-lines {
+    background-image: linear-gradient(
+        to right,
+        rgba(0, 255, 255, 0.2) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 200%;
+    height: 200%;
+  }
+}

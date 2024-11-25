@@ -1,0 +1,13 @@
+{
+  "extends": "fastify-tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/lib/taskScheduler.ts",
+    "src/lib/gcp-service-account.json",
+    "src/routes/v1/bets/test.ts"
+  ]
+}

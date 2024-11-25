@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  updown-test-db:
+    image: postgres:16.2
+    command: postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off -c random_page_cost=1.0
+    tmpfs: /var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: updown
+      PGDATA: /var/lib/postgresql/data/pgdata
+    container_name: updown-test-db
+
+networks:
+  default:
+    external:
+      name: cloudbuild

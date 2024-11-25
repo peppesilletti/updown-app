@@ -1,0 +1,77 @@
+steps:
+  # Tests
+  - name: "docker/compose"
+    id: "compose-up"
+    dir: "server"
+    args: ["-f", "docker-compose.ci.yml", "up", "-d"]
+
+  - name: "node:20.8.1-alpine"
+    id: "run-tests"
+    dir: "server"
+    entrypoint: "sh"
+    env:
+      - "POSTGRES_DB=updown"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_PORT=5432"
+      - "POSTGRES_HOST=updown-test-db"
+      - "GOOGLE_CLOUD_PROJECT=123"
+      - "GOOGLE_CLOUD_LOCATION=123"
+      - "GOOGLE_CLOUD_QUEUE=123"
+      - "CI=true"
+    args:
+      - -c
+      - |
+        npm ci --ignore-scripts
+        npm run test:ci;
+
+  - name: "docker/compose"
+    id: "compose-down"
+    dir: "server"
+    args: ["-f", "docker-compose.ci.yml", "down"]
+
+  # Build the container image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA",
+        "--file=./server/Dockerfile",
+        "./server",
+      ]
+    id: "build-api-docker-image"
+
+  # Push the container image to Container Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA",
+      ]
+    id: "push-api-docker-image"
+
+  # Deploy container image to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "updown-api"
+      - "--image"
+      - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}:$SHORT_SHA"
+      - "--region"
+      - "europe-west3"
+    id: "deploy-api-container"
+
+images:
+  - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"
+
+substitutions:
+  _LOCATION: europe-west3
+  _REPOSITORY: updown
+  _IMAGE: updown-api
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: "E2_HIGHCPU_8"

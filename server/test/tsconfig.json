@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true
+  },
+  "include": [
+    "../src/**/*.ts",
+    "**/*.ts",
+    "../src/lib/taskScheduler.ts",
+    "../src/routes/v1/bets/test.ts",
+    "setup.mjs"
+  ]
+}
