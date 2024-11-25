@@ -8,8 +8,6 @@ export type TestContext = {
 
 const AppPath = path.join(__dirname, "..", "src", "app.ts");
 
-// Fill in this config with all the configurations
-// needed for testing the application
 async function config() {
   return {};
 }
